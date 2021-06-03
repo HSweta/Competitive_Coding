@@ -26,7 +26,8 @@ public class StackQs {
 //		//nextGreaterElement(arr);
 //		int[] res = nextGreaterElement2(arr);
 //		
-		int[] arr = { 80, 50, 70, 30, 20, 40, 90, 10, 15, 35 };
+		//int[] arr = { 80, 50, 70, 30, 20, 40, 90, 10, 15, 35 };
+		int[] arr = {30,35,40,38,35};
 		int[] res = stockSpan(arr);
 
 		for (int i = 0; i < res.length; i++) {
@@ -140,7 +141,7 @@ public class StackQs {
 		for (int i = 0; i < arr.length; i++) {
 
 			// arr[i] want to be next greater
-			while (!s.isEmpty() && arr[i] > arr[s.peek()]) {
+			while (!s.isEmpty() && arr[i] >= arr[s.peek()]) {
 				ans[s.pop()] = arr[i];
 			}
 

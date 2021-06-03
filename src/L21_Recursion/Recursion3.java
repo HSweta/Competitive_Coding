@@ -8,7 +8,7 @@ public class Recursion3 {
 
 	public static void main(String[] args) {
 		// subsequence_Print("abc", "");
-		 KPC("145","");
+		// KPC("145", "");
 		// coinToss(3, "");
 		// ValidParathesis(3, 0, 0, "");
 		// climbingStair(0, 5, "");
@@ -16,9 +16,10 @@ public class Recursion3 {
 		// Permutation("abc", "");
 		// coinTossNoConsecuiveHead(3, "", false);
 		// lexicoCounting(0, 1000);
-		jumpingNumbers(0, 20);
-		//palidomicPartitions("nitin", "");
-		 System.out.println();
+		// jumpingNumbers(0, 20);
+		// palidomicPartitions("nitin", "");
+		System.out.println(BoardPath(0, 10));
+		
 
 	}
 
@@ -313,7 +314,6 @@ public class Recursion3 {
 			return;
 
 		}
-		
 
 		for (int i = 1; i <= ques.length(); i++) { // 1->ques.length()
 
@@ -338,6 +338,37 @@ public class Recursion3 {
 		}
 
 		return true;
+	}
+
+	public static void BoardPath(int src, int des, String ans) {
+
+		if (src == des) {
+			System.out.println(ans);
+			return;
+		}
+		if (src > des) {
+			return;
+		}
+		for (int i = 1; i <= 6; i++) {
+			BoardPath(src + i, des, ans + i);
+		}
+	}
+
+	public static int BoardPath(int src, int des) {
+
+		if (src == des) {
+			return 1;
+		}
+		if (src > des) {
+			return 0;
+		}
+
+		int ans = 0;
+		for (int i = 1; i <= 6; i++) {
+			ans += BoardPath(src + i, des);
+		}
+
+		return ans;
 	}
 
 }

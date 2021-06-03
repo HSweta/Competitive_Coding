@@ -373,7 +373,7 @@ public class LinkedList {
 		n13.next = n12;
 		n12.next = n11;
 		n11.next = n7;
-		
+
 		intersection(n1, n13);
 
 	}
@@ -399,4 +399,41 @@ public class LinkedList {
 		System.out.println(fp.data);
 
 	}
+
+	public void KReverse(int k) {
+		head = KReverse(head, k);
+	}
+
+	private Node KReverse(Node node, int k) {
+
+		if (node == null) {
+			return null;
+		}
+
+		// to identify the argument of smaller problem
+		Node temp = node;
+
+		for (int i = 1; i <= k && temp != null; i++) {
+			temp = temp.next;
+		}
+
+		// smaller problem : s2 and s3 reverse
+		Node prev = KReverse(temp, k);
+
+		// self work : reverse s1
+		// reverse pointer iteratively
+		Node curr = node;
+
+		while (curr != temp) {
+			Node ahead = curr.next;
+			curr.next = prev;
+
+			prev = curr;
+			curr = ahead;
+		}
+
+		return prev;
+
+	}
+
 }
