@@ -2,8 +2,6 @@ package L54_BinaryTree;
 
 import java.util.*;
 
-import linkedList.LinkedList;
-
 public class BinaryTree {
 
 	Scanner sc = new Scanner(System.in);
@@ -547,16 +545,49 @@ public class BinaryTree {
 	public void verticalTraversal() {
 
 		HashMap<Integer, ArrayList<Integer>> map = new HashMap<>();
+		Queue<VOPair> q = new LinkedList<>();
 
-		// Queue<VOPair> q = new LinkedList<>();
+		VOPair sp = new VOPair(root, 0);
+		q.add(sp);
 
+		while (!q.isEmpty()) {
+
+			// remove
+			VOPair rp = q.remove();
+
+			// check if entry is already present with rp.vl ? if no ,then make an entry
+			if (!map.containsKey(rp.vl))
+				map.put(rp.vl, new ArrayList<>());
+
+			// add the data of node in map
+			map.get(rp.vl).add(rp.n.data);
+
+			// left child
+			if (rp.n.left != null) {
+				VOPair left = new VOPair(rp.n.left, rp.vl - 1);
+				q.add(left);
+			}
+
+			// right child
+			if (rp.n.right != null) {
+				VOPair right = new VOPair(rp.n.right, rp.vl + 1);
+				q.add(right);
+			}
+		}
+
+		ArrayList<Integer> keys = new ArrayList<>(map.keySet());
+		Collections.sort(keys);
+
+		for (int key : keys) {
+			System.out.println(key + " -> " + map.get(key));
+		}
 	}
 
 //	private void verticalOrder(Node node) {
 //
 //	}
 
-	public void BinaryTree(int[] pre, int[] in) {
+	public BinaryTree(int[] pre, int[] in) {
 		root = construct(pre, 0, pre.length - 1, in, 0, in.length - 1);
 
 	}
@@ -565,7 +596,7 @@ public class BinaryTree {
 
 		if (plo > phi || ilo > ihi)
 			return null;
-		
+
 		Node nn = new Node();
 		nn.data = pre[plo];
 
@@ -587,4 +618,347 @@ public class BinaryTree {
 		return nn;
 	}
 
+	private Node construct1(int[] pst, int plo, int phi, int[] in, int ilo, int ihi) {
+
+		if (plo > phi || ilo > ihi)
+			return null;
+
+		Node nn = new Node();
+		nn.data = pst[phi];
+
+		int nel = 0;
+		int si = -1;
+
+		for (int i = ilo; i <= ihi; i++) {
+
+			if (in[i] == pst[phi]) {
+				si = i;
+				break;
+			}
+			nel++;
+		}
+
+		nn.left = construct1(pst, plo, plo + nel - 1, in, ilo, si - 1);
+		nn.right = construct1(pst, plo + nel, phi - 1, in, si + 1, ihi);
+
+		return nn;
+	}
+
+	private int min(Node node) {
+		if (node == null)
+			return Integer.MAX_VALUE;
+
+		int max = node.data;
+
+		max = Math.min(max, min(node.left));
+		max = Math.min(max, min(node.right));
+
+		return max;
+	}
+
+	private boolean isBST1 = true;
+
+	public boolean isTreeBST1() {
+		isTreeBST1(root);
+		return isBal;
+	}
+
+	void isTreeBST1(Node node) {
+		if (node == null)
+			return;
+
+		isTreeBST1(node.left);
+		isTreeBST1(node.right);
+
+		int leftMax = max(node.left);
+		int rightMin = min(node.right);
+
+		if (!(node.data >= leftMax && node.data <= rightMin)) {
+			isBST1 = false;
+		}
+
+	}
+
+	public boolean isBST2() {
+		return isBST2(root);
+	}
+
+	private boolean isBST2(Node node) {
+
+		if (node == null)
+			return true;
+
+		boolean lbst = isBST2(node.left);
+		boolean rbst = isBST2(node.right);
+
+		int leftMax = max(node.left);
+		int rightMin = min(node.right);
+
+		if (lbst && rbst && (node.data > leftMax && node.data < rightMin))
+			return true;
+		else
+			return false;
+
+	}
+
+	private class BSTPair {
+		boolean isBST = true;
+		int max = Integer.MIN_VALUE;
+		int min = Integer.MAX_VALUE;
+	}
+
+	public boolean isBST3() {
+		return isBST3(root).isBST;
+	}
+
+	private BSTPair isBST3(Node node) {
+
+		if (node == null)
+			return new BSTPair();
+
+		BSTPair lp = isBST3(node.left);
+		BSTPair rp = isBST3(node.right);
+
+		BSTPair sp = new BSTPair();
+
+		int leftMax = lp.max;
+		int rightMin = rp.min;
+
+		if (lp.isBST && rp.isBST && (node.data > leftMax && node.data < rightMin)) {
+			sp.isBST = true;
+
+		} else {
+			sp.isBST = false;
+		}
+
+		sp.max = Math.max(node.data, Math.max(lp.max, rp.max));
+		sp.min = Math.min(node.data, Math.min(lp.min, rp.min));
+
+		return sp;
+
+	}
+
+	private class LBSTPair {
+		boolean isBST = true;
+		int max = Integer.MIN_VALUE;
+		int min = Integer.MAX_VALUE;
+
+		int largestBSTRootNode;
+		int size = 0;
+	}
+
+	public int largestBSTRootNode() {
+		return largestBST(root).largestBSTRootNode;
+	}
+
+	private LBSTPair largestBST(Node node) {
+
+		if (node == null)
+			return new LBSTPair();
+
+		LBSTPair lp = largestBST(node.left);
+		LBSTPair rp = largestBST(node.right);
+
+		LBSTPair sp = new LBSTPair();
+
+		int leftMax = lp.max;
+		int rightMin = rp.min;
+
+		if (lp.isBST && rp.isBST && (node.data > leftMax && node.data < rightMin)) {
+			sp.isBST = true;
+
+		} else {
+			sp.isBST = false;
+		}
+
+		sp.max = Math.max(node.data, Math.max(lp.max, rp.max));
+		sp.min = Math.min(node.data, Math.min(lp.min, rp.min));
+
+		// largestBST
+		if (sp.isBST) {
+			sp.largestBSTRootNode = node.data;
+			sp.size = lp.size + rp.size + 1;
+		} else {
+
+			if (lp.size >= rp.size) {
+				sp.largestBSTRootNode = lp.largestBSTRootNode;
+				sp.size = lp.size;
+			} else {
+				sp.largestBSTRootNode = rp.largestBSTRootNode;
+				sp.size = rp.size;
+			}
+		}
+
+		return sp;
+
+	}
+
+	public void LevelOrderPrint() {
+		List<List<Integer>> ans = levelOrder(root);
+		System.out.println(ans);
+
+	}
+
+	List<List<Integer>> ans = new ArrayList<>();
+
+	private List<List<Integer>> levelOrder(Node root) {
+
+		// List<List<Integer>> ans = new ArrayList<>();
+		Queue<Node> q = new LinkedList<>();
+		Queue<Node> h = new LinkedList<>();
+
+		q.add(root);
+		ArrayList<Integer> a1 = new ArrayList<>();
+		while (!q.isEmpty()) {
+
+			Node rn = q.remove();
+			// System.out.println(rn.data);
+
+			if (rn == null)
+				break;
+
+			a1.add(rn.data);
+
+			if (rn.left != null)
+				h.add(rn.left);
+
+			if (rn.right != null)
+				h.add(rn.right);
+
+			if (q.isEmpty()) {
+				ans.add(new ArrayList<>(a1));
+				System.out.println(a1);
+				System.out.println(ans);
+				a1.removeAll(a1);
+
+				Queue<Node> temp = q;
+				q = h;
+				h = temp;
+			}
+
+		}
+
+		return ans;
+
+	}
+
+	public void zigzagLevelOrder() {
+		List<List<Integer>> ans = zigzagLevelOrder(root);
+		System.out.println(ans);
+
+	}
+
+	public List<List<Integer>> zigzagLevelOrder(Node root) {
+		List<List<Integer>> ans = new ArrayList<>();
+
+		Stack<Node> s = new Stack<>();
+		Stack<Node> h = new Stack<>();
+
+		s.add(root);
+		int count = 0;
+		ArrayList<Integer> a1 = new ArrayList<>();
+		while (!s.isEmpty()) {
+			Node rs = s.pop();
+
+			if (rs == null)
+				break;
+
+			a1.add(rs.data);
+
+			if (count % 2 == 0) {
+				if (rs.left != null) {
+					h.push(rs.left);
+				}
+				if (rs.right != null) {
+					h.push(rs.right);
+					System.out.println(rs.right.data);
+				}
+			} else {
+				if (rs.right != null) {
+					h.push(rs.right);
+					System.out.println(rs.right.data);
+				}
+				if (rs.left != null) {
+					h.push(rs.left);
+					System.out.println(rs.left.data);
+				}
+			}
+
+			if (s.isEmpty()) {
+				ans.add(new ArrayList<>(a1));
+				a1.clear();
+
+				Stack<Node> temp = s;
+				s = h;
+				h = temp;
+				count++;
+			}
+
+		}
+
+		return ans;
+	}
+
+	private class VOPair2 implements Comparable<VOPair2> {
+		int data;
+		int hl;
+
+		@Override
+		public String toString() {
+			return data + " -> " + hl;
+		}
+
+		@Override
+		public int compareTo(VOPair2 o) {
+			if (this.hl - o.hl == 0) {
+				return this.data - o.data;
+			} else {
+				return this.hl - o.hl;
+			}
+
+		}
+	}
+		public List<List<Integer>> verticalTraversal2() {
+
+			List<List<Integer>> ans = new ArrayList<>();
+
+			HashMap<Integer, ArrayList<VOPair2>> map = new HashMap<>();
+			verticalTraversal2(root, 0, 0, map);
+
+			ArrayList<Integer> keys = new ArrayList<>(map.keySet());
+			Collections.sort(keys);
+
+			for (int key : keys) {
+				ArrayList<VOPair2> temp = map.get(key);
+				Collections.sort(temp);
+
+				List<Integer> tempdata = new ArrayList<>();
+				for (VOPair2 pair : temp) {
+					tempdata.add(pair.data);
+				}
+
+				ans.add(tempdata);
+
+				// System.out.println(key+" -> "+temp);
+
+			}
+
+			return ans;
+
+		}
+
+		private void verticalTraversal2(Node node, int vl, int hl, HashMap<Integer, ArrayList<VOPair2>> map) {
+
+			if (!map.containsKey(vl)) {
+				map.put(vl, new ArrayList<>());
+			}
+
+			VOPair2 np = new VOPair2();
+			np.data = node.data;
+			np.hl = hl;
+			map.get(vl).add(np);
+
+			verticalTraversal2(node.left, vl - 1, hl + 1, map);
+			verticalTraversal2(node.right, vl + 1, hl + 1, map);
+		}
 }
