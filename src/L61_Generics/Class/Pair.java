@@ -1,8 +1,8 @@
 package L61_Generics.Class;
 
-public class Pair<T> {
-   T a;
-   T b;
+public class Pair<A,B> {
+   A a;
+   B b;
    
 	
 }
