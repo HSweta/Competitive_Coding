@@ -1,4 +1,4 @@
-package DP_GFG;
+package GFG;
 
 public class PartitionSet {
 
