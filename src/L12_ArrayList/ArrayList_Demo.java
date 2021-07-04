@@ -15,7 +15,8 @@ public class ArrayList_Demo {
 		
 		x=a;//autoboxing
 		System.out.println(x);
-
+        
+		
 	}
 
 }

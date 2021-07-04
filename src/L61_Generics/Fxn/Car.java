@@ -21,8 +21,8 @@ public class Car implements Comparable<Car> {
 	@Override
 	public int compareTo(Car other) {
 
-		// return this.speed - other.speed;
+		 return this.speed - other.speed;
 		// return other.price - this.price;
-		return this.color.compareTo(other.color);
+		//return this.color.compareTo(other.color);
 	}
 }
